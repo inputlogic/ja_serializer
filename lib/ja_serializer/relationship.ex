@@ -39,6 +39,7 @@ defmodule JaSerializer.Relationship do
       * `identifiers` - Should "resource identifiers be included, options are `:when_included` and `:always`. Defaults to `:when_included`
       * `links`       - A keyword list of links, `self` and `related` are most common.
       * `name`        - Name of the relationship, automatically set.
+      * `meta`        - A map of meta data associated with the individual Relationship. Can be a function.
 
     Used when defining relationships without the DSL using the
     JaSerializer.relationships/2 callback. For example:
@@ -49,6 +50,7 @@ defmodule JaSerializer.Relationship do
               serializer:  MyApp.CommentView,
               include:     true,
               data:        article.comments,
+              meta:        fn(article, conn) -> %{count: comments.count_for(article)} end
             }
           }
         end
@@ -63,7 +65,8 @@ defmodule JaSerializer.Relationship do
       include:     false,
       data:        nil,
       identifiers: :when_included,
-      name:        nil
+      name:        nil,
+      meta:        nil
     ]
 
     @doc false
@@ -75,6 +78,7 @@ defmodule JaSerializer.Relationship do
         include:     dsl_opts[:include],
         data:        dsl_opts[:data] || name,
         identifiers: dsl_opts[:identifiers] || :when_included,
+        meta:        dsl_opts[:meta],
         name:        name
       }
     end

@@ -18,6 +18,7 @@ defmodule JaSerializer.Builder.Relationship do
     %__MODULE__{name: name}
     |> add_links(definition, context)
     |> add_data(definition, context)
+    |> add_meta(definition, context)
   end
 
   defp add_links(relation, definition, context) do
@@ -34,6 +35,14 @@ defmodule JaSerializer.Builder.Relationship do
       Map.put(relation, :data, ResourceIdentifier.build(context, definition))
     else
       relation
+    end
+  end
+
+  defp add_meta(relation, definition, context) do
+    case Map.get(definition, :meta) do
+      nil -> relation
+      fun when is_function(fun) -> Map.put(relation, :meta, fun.(context.data, context.conn))
+      other -> Map.put(relation, :meta, other)
     end
   end
 

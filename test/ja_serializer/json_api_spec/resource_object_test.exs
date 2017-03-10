@@ -24,6 +24,9 @@ defmodule JaSerializer.JsonApiSpec.ResourceObjectTest do
         "comments": {
           "links": {
             "related": "/articles/1/comments"
+          },
+          "meta": {
+            count: 23
           }
         },
         "likes": {
@@ -46,7 +49,8 @@ defmodule JaSerializer.JsonApiSpec.ResourceObjectTest do
       link: "/articles/:id/author",
       type: "people"
     has_many :comments,
-      link: "/articles/:id/comments"
+      link: "/articles/:id/comments",
+      meta: %{count: 23}
     has_many :likes,
       type: "like"
     has_one :excerpt,
@@ -63,7 +67,7 @@ defmodule JaSerializer.JsonApiSpec.ResourceObjectTest do
     def relationships(post, _conn) do
       %{
         author:   %HasOne{links: [related: "/articles/:id/author"], type: "people", data: post.author},
-        comments: %HasMany{links: [related: "/articles/:id/comments"]},
+        comments: %HasMany{links: [related: "/articles/:id/comments"], meta: %{count: 23}},
         likes:    %HasMany{type: "like", data: post.likes},
         excerpt:  %HasOne{type: "excerpt"}
       }
